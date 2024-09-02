@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Facebook – log in or sign up</title>
+    
+  </head>
+  <body class="bg-gray-100">
+    <div class="container mt-48 flex">
+      <div class="left w-99 pl-12">
+        <img class="w-80 pt-12" src="fb.svg" alt="Facebook logo" />
+        <p class="text-3xl mx-8 mr-5">
+          Facebook helps you connect and share with the people in your life.
+        </p>
+      </div>
+
+      <div
+        class="right flex flex-col bg-white p-8 w-5/12 h-96 rounded-md shadow drop-shadow-lg"
+      >
+        <input
+          class="px-4 h-12 border-2 border-gray-200 my-2 rounded-md outline-blue-600"
+          type="email"
+          id="email"
+          placeholder="Email address or phone number"
+          required
+        />
+        <input
+          class="px-4 h-12 border-2 border-gray-200 my-2 rounded-md outline-blue-600"
+          type="password"
+          id="password"
+          placeholder="Password"
+          required
+        />
+        <button
+          class="btn text-white font-bold text-xl px-4 h-12 bg-blue-700 hover:bg-blue-800 rounded-md"
+          onclick="login()"
+        >
+          Log in
+        </button>
+        <span
+          class="my-4 text-blue-500 font-normal text-sm cursor-pointer text-center"
+          onclick="forgotten_error()"
+          >Forgotten password?</span
+        >
+        <hr class="mb-7 w-80 self-center" />
+        <a
+          href="create_account.html"
+          class="bg-green-600 hover:bg-green-700 py-3 w-44 self-center rounded-md text-white font-bold text-center inline-block"
+          >Create new account</a
+        >
+      </div>
+    </div>
+
+    <script>
+        function login() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            if (email && password) {
+                fetch("http://localhost:3000/users/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ email, password}),
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    localStorage.setItem("user",JSON.stringify({data}))
+                    console.log(data);
+                    
+                                  if(data.value==email.value){
+                                    window.location.href='feed.html';
+                                  }
+                })
+                .catch((error) => {
+                    console.error("Error during login:", error);
+                    alert("Login failed. Please try again.");
+                });
+            } else {
+                alert("Please fill in both fields.");
+            }
+        }
+        
+        function forgotten_error() {
+            alert("Forgotten password functionality is not implemented.");
+        }
+    </script>
+  </body>
+</html>

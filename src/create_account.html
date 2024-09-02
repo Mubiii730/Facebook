@@ -1,0 +1,73 @@
+ 
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <title>Facebook – log in or sign up</title>
+    
+</head>
+<body class="bg-gray-100">
+
+    <input class="px-4 h-12 border-2 border-gray-200 my-2 rounded-md outline-blue-600" type="email" id="email" placeholder="Email address or phone number" required>
+    <input class="px-4 h-12 border-2 border-gray-200 my-2 rounded-md outline-blue-600" type="password" id="password" placeholder="Password" required>
+    <button class="btn text-white font-bold text-xl px-4 h-12 bg-blue-700 hover:bg-blue-800 rounded-md" onclick="create_account()">Create</button>
+</body>
+
+<script>
+    // const axios=require('axios').default;
+    // const https=require('https');
+
+    function create_account(){
+        const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            if (email && password) {
+                fetch("http://localhost:3000/users/create_account", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ email, password }),
+                })
+                .then((response) => response.text())
+                .then((data) => {
+                   console.log(data)
+                    alert("Account Creation Successful.");
+                    window.location.href='index.html';
+                })
+                .catch((error) => {
+                    console.error("Error in Account Creation:", error);
+                    alert("Account Creation failed. Please try again.");
+                });
+            } else {
+                alert("Please fill in both fields.");
+            }
+        }
+
+
+
+
+
+
+
+    //     const email = document.getElementById("email").value;
+    //     const password = document.getElementById("password").value;
+   
+    // const apiUrl='https://localhost:3000/users/create_account';
+
+    // axios.get(apiUrl, body:JSON.stringify({email, password}))
+    // .then(res=>{
+    //     console.log('Account is created Successfully');
+    // })
+    // .catch(error=>{
+    //     console.log('Error creating Account', error);
+        
+        
+    // });
+// }
+</script>
+</html>

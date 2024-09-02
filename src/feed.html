@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>Feeds</title>
+</head>
+<body>
+    <h1>Create POST</h1>
+    <a href="All_feed.html">All Feeds</a>
+
+    <div>
+        <textarea id="txt" cols="20" rows="5" placeholder="Post Here"></textarea>
+        <button id="button" onclick="getInputValue()">POST</button>
+        
+        
+    </div>
+
+    <div id="response"></div> 
+
+    <script>
+        function getInputValue() {
+            var posted = document.getElementById("txt").value;
+            
+
+            
+           
+            
+            console.log(localStorage.getItem("user"))
+            // var for_getting_id= JSON.parse()
+
+            if (posted) {
+                fetch("http://localhost:3000/users/create_post/1", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({blog:posted}),
+                })
+                .then((response) => response.text())
+                .then((data) => {
+                    // document.getElementById("response").value = data;
+
+                    document.getElementById('txt').value='';
+                    alert("Posted Successfully.");
+                    
+                  
+                })
+
+            } else {
+                alert("Post Creation failed. Please try again.");
+            }
+        }
+
+
+
+
+    </script>
+</body>
+</html>

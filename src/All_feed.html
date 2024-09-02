@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feeds</title>
+    <style>
+      .post {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin: 10px;
+      }
+      .like-button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+      .like-button.liked {
+        background-color: #28a745;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="posts-container"></div>
+
+    <textarea class="text-area" id="txt" cols="20" rows="5" placeholder="Comment Here"></textarea>
+   
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const postsContainer = document.getElementById("posts-container");
+
+        async function fetchPosts() {
+          try {
+            const response = await fetch("http://localhost:3000/users/all_feeds");
+            const data = await response.json();
+            displayPosts(data);
+          } catch (error) {
+            console.error("Error fetching posts:", error);
+          }
+        }
+
+        function displayPosts(posts) {
+          posts.forEach((post) => {
+            const postDiv = document.createElement("div");
+            postDiv.className = "post";
+            postDiv.innerHTML = `
+              <h2>${post.id}</h2>
+              <p>${post.blog}</p>
+              <button class="like-button" value="${post.id}">Like</button>
+              <button class="comment-button" value="${post.id}">Comment</button>
+            `;
+            postsContainer.appendChild(postDiv);
+          });
+
+          const likeButtons = document.querySelectorAll(".like-button");
+          likeButtons.forEach((button) => {
+            button.addEventListener("click", async function () {
+              const buttonValue = button.value;
+              console.log('Button value:', buttonValue);
+              this.classList.toggle("liked");
+              this.textContent = this.classList.contains("liked")
+                ? "Liked"
+                : "Like";
+
+              try {
+                const response = await fetch(`http://localhost:3000/users/likes/1`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    post_id: buttonValue,
+                  }),
+                });
+                const data = await response.json();
+                console.log(data);
+              } catch (error) {
+                console.error("Trouble liking:", error);
+              }
+            });
+          });
+
+          const commentButtons = document.querySelectorAll(".comment-button");
+          commentButtons.forEach((button) => {
+            button.addEventListener("click", async function () {
+              const postId = button.value;
+              const commentText = document.getElementById("txt").value;
+
+              if (commentText) {
+                try {
+                  const response = await fetch(`http://localhost:3000/users/comments/1`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ post_id: postId, comment: commentText }),
+                  });
+                  const data = await response.text();
+                  document.getElementById("txt").value = '';
+                  alert("Commented Successfully.");
+                } catch (error) {
+                  console.error("Trouble commenting:", error);
+                  alert("Trouble commenting. Please try again.");
+                }
+              } else {
+                alert("Please enter a comment.");
+              }
+            });
+          });
+        }
+
+        fetchPosts();
+      });
+    </script>
+  </body>
+</html>
